@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جداول طالبات الجمعية الخيرية الإلكترونية لتحفيظ القرآن الكريم</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5; /* أبيض فاتح */
+            direction: rtl;
+        }
+        h2 {
+            color: #6a4e23; /* بني */
+        }
+        .teacher-name {
+            font-size: 18px;
+            color: #6a4e23;
+            margin-top: -10px; /* لتقليل المسافة بين العنوان واسم المعلمة */
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .name-input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+            background-color: #fff;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #6a4e23; /* بني */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #4a3621; /* بني داكن */
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #6a4e23; /* بني */
+            color: white;
+        }
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #6a4e23;
+            border: 1px solid #ddd;
+        }
+        .checked {
+            background-color: #4CAF50; /* أخضر عند التحديد */
+        }
+        .reviewInput {
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #6a4e23; /* بني */
+            background-color: #fff; /* أبيض */
+            color: #000; /* نص باللون الأسود */
+            box-sizing: border-box;
+        }
+        .student-name {
+            font-size: 20px;
+            color: #6a4e23;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>جداول طالبات الجمعية الخيرية الإلكترونية لتحفيظ القرآن الكريم</h2>
+        <div class="teacher-name">المعلمة/ أروى المضحي</div>
+
+        <!-- خانة الاسم تظهر مرة واحدة فقط -->
+        <div class="student-name">
+            <label for="studentName">اسم الطالبة:</label>
+            <input type="text" id="studentName" class="name-input" placeholder="اسم الطالبة">
+        </div>
+        <button onclick="submitName()">تأكيد اسم الطالبة</button>
+
+        <table id="scheduleTable">
+            <thead>
+                <tr>
+                    <th colspan="4" id="studentNameCell">اسم الطالبة: <span id="displayName"></span></th>
+                </tr>
+                <tr>
+                    <th>اليوم</th>
+                    <th>مقدار الحفظ</th>
+                    <th>المراجعة</th>
+                    <th>تم الحفظ؟</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <select id="days">
+            <option value="الأحد">الأحد</option>
+            <option value="الإثنين">الإثنين</option>
+            <option value="الثلاثاء">الثلاثاء</option>
+            <option value="الأربعاء">الأربعاء</option>
+            <option value="الخميس">الخميس</option>
+        </select>
+        <input type="text" id="memorization" placeholder="مقدار الحفظ">
+        <input type="text" id="review" placeholder="المراجعة (إذا كانت هناك مراجعة لسور سابقة)">
+        <button onclick="addToTable()">إضافة إلى الجدول</button>
+
+        <!-- زر تحميل الجدول كصورة -->
+        <button onclick="downloadTable()">تحميل الجدول كصورة</button>
+
+        <!-- زر إضافة طالبة جديدة -->
+        <button onclick="addNewStudent()">إضافة طالبة جديدة</button>
+    </div>
+
+    <script>
+        var studentName = "";
+
+        function submitName() {
+            studentName = document.getElementById("studentName").value;
+            if (studentName === "") {
+                alert("يرجى إدخال اسم الطالبة.");
+                return;
+            }
+            document.getElementById("displayName").textContent = studentName;
+            document.getElementById("studentName").disabled = true;
+            document.getElementById("studentName").style.display = "none";
+            document.getElementById("studentNameCell").style.display = "table-row"; // عرض صف اسم الطالبة في الجدول
+        }
+
+        function addNewStudent() {
+            // مسح الجدول والبيانات القديمة لإضافة طالبة جديدة
+            studentName = "";
+            document.getElementById("displayName").textContent = "";
+            document.getElementById("studentName").style.display = "block";
+            document.getElementById("studentName").disabled = false;
+            document.getElementById("studentName").value = "";
+            document.getElementById("scheduleTable").getElementsByTagName('tbody')[0].innerHTML = "";
+            document.getElementById("studentNameCell").style.display = "none"; // إخفاء اسم الطالبة في الجدول عند إدخال طالبة جديدة
+        }
+
+        function addToTable() {
+            if (studentName === "") {
+                alert("يرجى إدخال اسم الطالبة أولاً.");
+                return;
+            }
+
+            var day = document.getElementById("days").value;
+            var memorization = document.getElementById("memorization").value;
+            var review = document.getElementById("review").value;
+
+            if (memorization === "") {
+                alert("يرجى إدخال مقدار الحفظ.");
+                return;
+            }
+
+            var table = document.getElementById("scheduleTable").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow();
+            newRow.insertCell(0).textContent = day;
+            newRow.insertCell(1).textContent = memorization;
+
+            var reviewCell = newRow.insertCell(2);
+            var reviewInput = document.createElement('input');
+            reviewInput.className = 'reviewInput';
+            reviewInput.value = review;
+            reviewInput.disabled = true;
+            reviewCell.appendChild(reviewInput);
+
+            var checkCell = newRow.insertCell(3);
+            var checkBox = document.createElement('div');
+            checkBox.className = 'checkbox';
+            checkBox.onclick = function() {
+                checkBox.classList.toggle('checked');
+            };
+            checkCell.appendChild(checkBox);
+
+            document.getElementById("memorization").value = "";
+            document.getElementById("review").value = "";
+        }
+
+        function downloadTable() {
+            html2canvas(document.getElementById("scheduleTable")).then(canvas => {
+                var link = document.createElement("a");
+                link.href = canvas.toDataURL();
+                link.download = "جدول الحفظ.png";
+                link.click();
+            });
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+
+</body>
+</html>
